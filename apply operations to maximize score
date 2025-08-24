@@ -1,0 +1,39 @@
+MOD=10**9+7
+class Solution(object):
+    def maximumScore(self, nums, k):
+        n=len(nums)
+        max_num=max(nums)
+        prime_score=[0]*(max_num+1)
+        for p in range(2,max_num+1):
+            if prime_score[p]==0:
+                for multiple in range(p,max_num+1,p):
+                    prime_score[multiple]+=1
+        def get_range(arr):
+            n=len(arr)
+            left,right=[-1]*n,[n]*n
+            stack=[]
+            for i in range(n):
+                while stack and arr[stack[-1]]<arr[i]:
+                    right[stack.pop()]=i
+                stack.append(i)
+            stack=[]
+            for i in range(n-1,-1,-1):
+                while stack and arr[stack[-1]]<=arr[i]:
+                    left[stack.pop()]=i
+                stack.append(i)
+            return left,right
+        arr=[prime_score[x] for x in nums]
+        left,right=get_range(arr)
+        contrib=[]
+        for i,x in enumerate(nums):
+            count=(i-left[i])*(right[i]-i)
+            contrib.append((x,count))
+        contrib.sort(reverse=True,key=lambda x:x[0])
+        res=1
+        for val,cnt in contrib:
+            use=min(cnt,k)
+            res=res=(res * pow(val,use, MOD))%MOD
+            k-=use
+            if k==0:
+                break
+        return res
