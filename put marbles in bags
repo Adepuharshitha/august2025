@@ -1,0 +1,5 @@
+def putMarbles(self, weights, k):
+        n=len(weights)
+        pairs=[weights[i]+weights[i+1] for i in range(n-1)]
+        pairs.sort()
+        return sum(pairs[-(k-1):])-sum(pairs[:k-1])
